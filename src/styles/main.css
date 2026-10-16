@@ -1,0 +1,6 @@
+@layer variables, reset, themes, base, components;
+
+@import "_variables.css" layer(variables);
+@import "_reset.css" layer(reset);
+@import "_themes.css" layer(themes);
+@import "_base.css" layer(base);

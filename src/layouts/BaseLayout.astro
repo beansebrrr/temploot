@@ -1,0 +1,47 @@
+---
+import "@styles/main.css";
+import { SITE } from "@utils/consts";
+import { SEO } from "astro-seo";
+
+
+interface Props {
+	pageTitle?: string
+	description?: string
+}
+
+const { pageTitle, description } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<SEO
+			title={pageTitle || SITE.name}
+			description={description || SITE.description}
+		/>	
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{pageTitle || SITE.name}</title>
+	</head>
+	<body>
+    <slot />
+	</body>
+</html>
+
+<script>
+	import { getTheme, setTheme } from "@utils/switch-theme";
+	import type { Theme } from "@utils/types";
+
+	const theme = getTheme() as Theme || null
+	if (theme !== null) {
+		setTheme(theme)
+	} else {
+		setTheme(
+			window.matchMedia?.("(prefers-color-scheme: dark)").matches
+				? "dark"
+				: "light"
+		)
+	}
+</script>
