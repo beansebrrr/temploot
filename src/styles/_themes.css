@@ -1,15 +1,3 @@
-/* Theme variables */
-:root {
-	--clr-text: light-dark(var(--clr-neutral-900), var(--clr-neutral-100));
-	--clr-text-secondary: light-dark(
-		var(--clr-neutral-700),
-		var(--clr-neutral-300)
-	);
-	--clr-surface: light-dark(var(--clr-neutral-100), var(--clr-neutral-900));
-	--clr-surface-recessed: light-dark(var(--clr-neutral-200), var(--clr-black));
-	--clr-container: light-dark(var(--clr-white), var(--clr-neutral-800));
-}
-
 :root[data-theme="light"] {
 	color-scheme: light;
 }

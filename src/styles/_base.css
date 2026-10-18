@@ -1,4 +1,19 @@
 :root {
 	font-family: sans-serif;
+}
+
+body {
 	font-size: var(--fs-0);
+}
+
+/* External Links */
+
+a:not([class])[href^="http"]:not(:has(img))::after {
+	display: inline-block;
+	content: "";
+	background-color: currentColor;
+	width: 0.85em;
+	height: 0.85em;
+	mask: url(../assets/icons/arrow-up-right.svg) no-repeat;
+	vertical-align: baseline;
 }

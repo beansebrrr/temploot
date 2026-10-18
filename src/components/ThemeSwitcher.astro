@@ -2,7 +2,7 @@
 import { Icon } from "astro-icon/components";
 ---
 
-<button type="button" class="theme-switcher">
+<button data-theme-switcher type="button" class="theme-switcher">
   <Icon name="lucide:moon" class="theme-switcher__dark" />
   <Icon name="lucide:sun" class="theme-switcher__light" />
 </button>
@@ -10,13 +10,20 @@ import { Icon } from "astro-icon/components";
 <style is:global>
   @layer components {
     .theme-switcher {
-      aspect-ratio: 1 / 1;
+      display: inline;
       border-radius: 100vh;
       border: none;
-      background-color: var(--clr-surface-recessed);
+      background-color: transparent;
       width: 2.5em;
+      aspect-ratio: 1 / 1;
       overflow: hidden;
-      position: relative
+      position: relative;
+      cursor: pointer;
+    }
+
+    .theme-switcher.animate-on-click
+    :is(.theme-switcher__dark, .theme-switcher__light) {
+      transition: transform 300ms ease;
     }
     
     .theme-switcher__light,
@@ -25,9 +32,8 @@ import { Icon } from "astro-icon/components";
       width: 50%;
       position: absolute;
       border-radius: 100vh;
-      transform-origin: 50% 200%;
+      transform-origin: 50% 250%;
       inset: 25%;
-      transition: transform 300ms ease;
     }
     
     :root:not([data-theme="dark"]) .theme-switcher__dark {
@@ -43,12 +49,44 @@ import { Icon } from "astro-icon/components";
 <script>
 import { getTheme, setTheme } from "@utils/switch-theme";
 
-  document.querySelectorAll(".theme-switcher").forEach($switcher => {
+  document.querySelectorAll("[data-theme-switcher]").forEach($switcher => {
     $switcher.addEventListener("click", () => {
-      setTheme(getTheme() === "light"
-        ? "dark"
-        : "light"
-      )
+      $switcher.classList.add("animate-on-click")
+
+      if (!document.startViewTransition) {
+        setTheme(getTheme() === "light"
+          ? "dark"
+          : "light"
+        )
+      } else  {
+        // This whole block of code grabs the coordinates of the theme switcher
+        // and injects it onto the css to be used
+        const { left, top, width, height } = $switcher.getBoundingClientRect();
+        const x = left + (width / 2);
+        const y = top + (height / 2);
+        const radius = Math.hypot(
+          Math.max(x, window.innerWidth - x),
+          Math.max(y, window.innerHeight - y),
+        );
+        const root = document.documentElement;
+        root.style.setProperty("--theme-transition-x", `${x}px`);
+        root.style.setProperty("--theme-transition-y", `${y}px`);
+        root.style.setProperty("--theme-transition-radius", `${radius}px`);
+        root.setAttribute("data-theme-transition", "");
+
+        const transition = document.startViewTransition(() => {
+          setTheme(getTheme() === "light"
+            ? "dark"
+            : "light"
+          )
+        })
+        transition.finished.finally(() => {
+          root.style.removeProperty("--theme-transition-x")
+          root.style.removeProperty("--theme-transition-y")
+          root.style.removeProperty("--theme-transition-radius")
+          root.removeAttribute("data-theme-transition")
+        })
+      }
     })
   })
 

@@ -1,0 +1,20 @@
+/* Theme-changing transitions */
+
+[data-theme-transition]::view-transition-old(root) {
+	animation-delay: 500ms;
+}
+[data-theme-transition]::view-transition-new(root) {
+	animation: circle-in 500ms ease-out;
+}
+
+@keyframes circle-in {
+	from {
+		clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+	}
+	to {
+		clip-path: circle(
+			var(--theme-transition-radius) at var(--theme-transition-x)
+				var(--theme-transition-y)
+		);
+	}
+}
